@@ -4,7 +4,13 @@
       <div class="logo">
         <router-link to="/"><img src="@/assets/logo.svg" /></router-link>
       </div>
-      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
+      <a-menu
+        v-model:selectedKeys="selectedKeys"
+        theme="dark"
+        mode="inline"
+        :openKeys="openKeys"
+        @select="select"
+      >
         <a-menu-item key="1">
           <pie-chart-outlined />
           <span><router-link to="/dashboard/home">首页</router-link></span>
@@ -13,9 +19,39 @@
           <desktop-outlined />
           <span><router-link to="/dashboard/crud">表单crud</router-link></span>
         </a-menu-item>
-        <a-menu-item key="3" v-if="Us.isAdmin">
-          <GithubOutlined />
-          <span><router-link to="/dashboard/roles">权限页面</router-link></span>
+        <a-sub-menu v-if="Us.isAdmin" :inline-collapsed="true" key="sub">
+          <template #title><GithubOutlined /> <span>权限页面</span></template>
+          <a-menu-item key="3">
+            <CloudUploadOutlined />
+            <span
+              ><router-link to="/dashboard/roles">文件上传</router-link></span
+            >
+          </a-menu-item>
+          <a-menu-item key="4">
+            <FireOutlined />
+            <span
+              ><router-link to="/dashboard/execl">Execl预览</router-link></span
+            >
+          </a-menu-item>
+          <a-menu-item key="5">
+            <RadarChartOutlined />
+            <span
+              ><router-link to="/dashboard/bigfile"
+                >大文件上传</router-link
+              ></span
+            >
+          </a-menu-item>
+          <a-menu-item key="6">
+            <FieldTimeOutlined />
+            <span
+              ><router-link to="/dashboard/lazy">图片懒加载</router-link></span
+            >
+          </a-menu-item> </a-sub-menu
+        ><a-menu-item key="7">
+          <FieldTimeOutlined />
+          <span
+            ><router-link to="/dashboard/shopping">购物车</router-link></span
+          >
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -39,30 +75,40 @@
           <a-button @click="logout" size="small">登出</a-button>
         </h2>
       </a-layout-header>
-      <a-layout-content style="margin: 0 16px">
+      <!-- 超出部分不显示 -->
+      <a-layout-content style="margin: 0 16px; overflow: auto">
         <!-- <BreadCrumb></BreadCrumb> -->
-        <div
-          :style="{
-            marginTop: '30px',
-            padding: '24px',
-            background: '#fff',
-            minHeight: '95%',
-          }"
-        >
-          <router-view></router-view>
-        </div>
+        <a-watermark content="Leet Project">
+          <div
+            :style="{
+              marginTop: '30px',
+              padding: '24px',
+              background: '#fff',
+              minHeight: '95%',
+            }"
+          >
+            <router-view></router-view>
+          </div>
+        </a-watermark>
+        <fixed-box></fixed-box>
       </a-layout-content>
-      <a-layout-footer style="text-align: center">
-        <!-- Ant Design ©2018 Created by Ant UED -->
+      <a-layout-footer style="text-align: center; font-size: 15px">
+        Created by Leet
       </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
 <script lang="ts" setup>
+import fixedBox from "../components/fixedBox.vue";
 import {
   PieChartOutlined,
   DesktopOutlined,
   GithubOutlined,
+  InstagramOutlined,
+  RadarChartOutlined,
+  CloudUploadOutlined,
+  FireOutlined,
+  FieldTimeOutlined,
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { reactive, ref, watch, onBeforeMount } from "vue";
@@ -73,10 +119,11 @@ const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(["1"]);
 const router = useRouter();
 const route = useRoute();
-const user = ref("");
+const user = ref("admin");
 const Us = useUserStore();
 const hasUser = ref(false);
 const admin = ref(true);
+const openKeys = ref(["sub"]);
 
 const clickLogin = () => {
   router.push("/login");
@@ -99,14 +146,16 @@ onBeforeMount(() => {
     user.value = window.sessionStorage.getItem("username");
     hasUser.value = !hasUser.value;
   }
-  // if (!hasUser.value) clickLogin();
 });
 onBeforeMount(() => {
-  if (route.path == "/dashboard/home") selectedKeys.value = ["1"];
-  if (route.path == "/dashboard/crud") selectedKeys.value = ["2"];
-  if (route.path == "/dashboard/roles") selectedKeys.value = ["3"];
+  if (window.sessionStorage.getItem("select")) {
+    selectedKeys.value = [window.sessionStorage.getItem("select")];
+  }
   Us.changeAdmin(user.value == "admin");
 });
+const select = ({ item, key, selectedKeys }) => {
+  window.sessionStorage.setItem("select", key);
+};
 </script>
 <style scoped>
 .logo {

@@ -46,6 +46,7 @@ const clickLogin = async () => {
   const token_info = await ILogin(username.value, password.value).then(
     (res) => res
   );
+  console.log(token_info);
   if (!!token_info) {
     User.changeUser(token_info.username);
     User.changeToken(token_info.token);
@@ -91,7 +92,7 @@ const toReg = () => {
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 52% 48% 33% 67% / 38% 45% 55% 62%;
+      border-radius: 52% 48% 33% 67% / 38% 40% 55% 62%;
       position: relative;
 
       .contentBox {

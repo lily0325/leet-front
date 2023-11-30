@@ -5,10 +5,10 @@
   </a-breadcrumb>
 </template>
 <script setup>
-import { onMounted } from "vue";
-import { useRoute } from "vue-router";
-const route = useRoute();
-//用router before路由守卫
-onMounted(() => {});
+// import { onMounted } from "vue";
+// import { useRoute } from "vue-router";
+// const route = useRoute();
+
+// onMounted(() => {});
 </script>
 

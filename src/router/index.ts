@@ -24,6 +24,34 @@ const router = createRouter({
           path: '/dashboard/roles',
           name: 'roles',
           component: () => import("../views/roles.vue")
+        },
+        {
+          path: '/dashboard/execl',
+          name: 'execl',
+          component: () => import("../views/previewExecl.vue")
+        },
+        {
+          path: '/dashboard/bigfile',
+          name: 'bigfile',
+          component: () => import("../views/bigFileUpload.vue")
+        }, {
+          path: '/dashboard/OCR',
+          name: 'OCR',
+          component: () => import("../views/ocr.vue")
+        },
+        {
+          path: '/dashboard/QRcode',
+          name: 'QRcode',
+          component: () => import("../views/QRcode.vue")
+        },
+        {
+          path: '/dashboard/lazy',
+          name: 'lazy',
+          component: () => import("../views/lazyShow.vue")
+        }, {
+          path: '/dashboard/shopping',
+          name: 'shopping',
+          component: () => import("../views/shopping.vue")
         }
       ]
     },
@@ -39,5 +67,9 @@ const router = createRouter({
     },
   ]
 })
+router.beforeEach((to, from) => {
+  // console.log(to)
 
+  return true;
+})
 export default router
